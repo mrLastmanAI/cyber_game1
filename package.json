@@ -1,0 +1,29 @@
+{
+  "name": "cyber-runner",
+  "version": "1.0.0",
+  "description": "Cyberpunk endless runner platformer game",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "android": "npm run build && npx cap sync android && npx cap open android"
+  },
+  "keywords": [
+    "game",
+    "platformer",
+    "cyberpunk",
+    "endless-runner"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "phaser": "^3.70.0"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^5.5.1",
+    "@capacitor/cli": "^5.5.1",
+    "@capacitor/core": "^5.5.1",
+    "vite": "^5.0.0"
+  }
+}
