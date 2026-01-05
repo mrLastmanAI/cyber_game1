@@ -1,0 +1,7 @@
+{
+	"appId": "com.cyberrunner.game",
+	"appName": "Cyber Runner",
+	"webDir": "dist",
+	"bundledWebRuntime": false,
+	"android": {}
+}
