@@ -233,19 +233,22 @@ export class GameScene extends Phaser.Scene {
     }
 
     createPlayer() {
-        this.player = this.physics.add.sprite(200, 500, 'player');
+        // Start player at a safe position above the platform
+        const startY = 450; // Platform is at 550, so player will be on top
+        this.player = this.physics.add.sprite(200, startY, 'player');
         this.player.setCollideWorldBounds(false);
         this.player.setBounce(0);
+        this.player.setScale(2); // Make player bigger
         this.player.body.setSize(24, 28);
     }
 
     createInitialPlatforms() {
-        // Create starting platforms
+        // Create starting platforms at fixed height
+        const platformY = 550; // Fixed platform height
         for (let i = 0; i < 8; i++) {
             const x = i * 200;
-            const y = 600;
-            const platform = this.platforms.create(x, y, 'platform');
-            platform.setScale(1);
+            const platform = this.platforms.create(x, platformY, 'platform');
+            platform.setScale(1.2); // Make platforms slightly bigger
             platform.refreshBody();
             this.lastPlatformX = x;
         }
@@ -253,54 +256,56 @@ export class GameScene extends Phaser.Scene {
 
     generateLevel() {
         const cameraRight = this.cameras.main.scrollX + this.cameras.main.width;
+        const platformY = 550; // Same fixed height for all platforms
 
         // Generate platforms
         while (this.lastPlatformX < cameraRight + 800) {
-            this.lastPlatformX += Phaser.Math.Between(150, 300);
-            const y = Phaser.Math.Between(500, 650);
-            const platform = this.platforms.create(this.lastPlatformX, y, 'platform');
-            platform.setScale(1);
+            this.lastPlatformX += 200; // Fixed spacing for easier gameplay
+            const platform = this.platforms.create(this.lastPlatformX, platformY, 'platform');
+            platform.setScale(1.2);
             platform.refreshBody();
         }
 
         // Generate obstacles
         if (this.lastObstacleX < cameraRight + 600) {
-            this.lastObstacleX += Phaser.Math.Between(300, 600);
-            this.createRandomObstacle(this.lastObstacleX);
+            this.lastObstacleX += Phaser.Math.Between(400, 700);
+            this.createRandomObstacle(this.lastObstacleX, platformY);
         }
 
         // Camera follows player
         this.cameras.main.scrollX = this.player.x - 200;
     }
 
-    createRandomObstacle(x) {
-        const type = Phaser.Math.Between(0, 3);
+    createRandomObstacle(x, platformY) {
+        const type = Phaser.Math.Between(0, 2); // Only 3 types for now, no gaps
         let obstacle;
 
         switch (type) {
-            case 0: // Spike
-                obstacle = this.obstacles.create(x, 550, 'spike');
+            case 0: // Spike - on the platform
+                const spikeY = platformY - 30; // Place spike ON the platform
+                obstacle = this.obstacles.create(x, spikeY, 'spike');
+                obstacle.setScale(1.5); // Make bigger
                 obstacle.body.setSize(28, 28);
                 break;
             case 1: // Laser (vertical beam)
-                obstacle = this.obstacles.create(x, 400, 'laser');
-                obstacle.setScale(1, 8);
-                obstacle.body.setSize(4, 200);
+                const laserY = platformY - 100; // Laser from above
+                obstacle = this.obstacles.create(x, laserY, 'laser');
+                obstacle.setScale(2, 6); // Make bigger and taller
+                obstacle.body.setSize(8, 180);
                 break;
             case 2: // Drone (flying)
-                obstacle = this.obstacles.create(x, Phaser.Math.Between(300, 500), 'drone');
+                const droneY = platformY - 150; // Drone flying above platform
+                obstacle = this.obstacles.create(x, droneY, 'drone');
+                obstacle.setScale(1.5); // Make bigger
                 obstacle.body.setSize(28, 28);
                 // Make drone hover
                 this.tweens.add({
                     targets: obstacle,
-                    y: obstacle.y + 30,
+                    y: obstacle.y + 20,
                     duration: 1000,
                     yoyo: true,
                     repeat: -1
                 });
-                break;
-            case 3: // Gap (remove platform)
-                // Find and remove platform at this location
                 break;
         }
 
@@ -401,24 +406,24 @@ export class GameScene extends Phaser.Scene {
     }
 
     createUI() {
-        // Score text
-        this.scoreText = this.add.text(20, 20, 'Score: 0', {
-            fontSize: '32px',
+        // Score text - bigger and easier to read
+        this.scoreText = this.add.text(30, 30, 'Score: 0', {
+            fontSize: '48px',
             fontFamily: 'monospace',
             color: '#00ffff',
             stroke: '#000000',
-            strokeThickness: 4
+            strokeThickness: 6
         });
         this.scoreText.setScrollFactor(0);
         this.scoreText.setDepth(100);
 
-        // High score text
-        this.highScoreText = this.add.text(20, 60, 'HIGH SCORE: ' + this.highScore, {
-            fontSize: '24px',
+        // High score text - bigger
+        this.highScoreText = this.add.text(30, 90, 'HIGH SCORE: ' + this.highScore, {
+            fontSize: '32px',
             fontFamily: 'monospace',
             color: '#ff00ff',
             stroke: '#000000',
-            strokeThickness: 4
+            strokeThickness: 5
         });
         this.highScoreText.setScrollFactor(0);
         this.highScoreText.setDepth(100);
