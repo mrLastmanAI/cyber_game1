@@ -157,8 +157,10 @@ export class GameScene extends Phaser.Scene {
         this.player = this.physics.add.sprite(200, startY, 'player');
         this.player.setCollideWorldBounds(false);
         this.player.setBounce(0);
-        this.player.setScale(2); // Make player bigger
-        this.player.body.setSize(24, 28);
+        this.player.setScale(0.6); // Scale down to reasonable size
+        // Adjust body size to match visible sprite
+        this.player.body.setSize(this.player.width * 0.7, this.player.height * 0.8);
+        this.player.body.setOffset(this.player.width * 0.15, this.player.height * 0.1);
     }
 
     createInitialPlatforms() {
@@ -167,7 +169,7 @@ export class GameScene extends Phaser.Scene {
         for (let i = 0; i < 8; i++) {
             const x = i * 200;
             const platform = this.platforms.create(x, platformY, 'platform');
-            platform.setScale(1.2); // Make platforms slightly bigger
+            platform.setScale(0.15, 0.4); // Scale to reasonable platform size
             platform.refreshBody();
             this.lastPlatformX = x;
         }
@@ -181,7 +183,7 @@ export class GameScene extends Phaser.Scene {
         while (this.lastPlatformX < cameraRight + 800) {
             this.lastPlatformX += 200; // Fixed spacing for easier gameplay
             const platform = this.platforms.create(this.lastPlatformX, platformY, 'platform');
-            platform.setScale(1.2);
+            platform.setScale(0.15, 0.4); // Scale to reasonable platform size
             platform.refreshBody();
         }
 
@@ -201,22 +203,22 @@ export class GameScene extends Phaser.Scene {
 
         switch (type) {
             case 0: // Spike - on the platform
-                const spikeY = platformY - 30; // Place spike ON the platform
+                const spikeY = platformY - 40; // Place spike ON the platform
                 obstacle = this.obstacles.create(x, spikeY, 'spike');
-                obstacle.setScale(1.5); // Make bigger
-                obstacle.body.setSize(28, 28);
+                obstacle.setScale(0.5); // Scale down to reasonable size
+                obstacle.body.setSize(obstacle.width * 0.7, obstacle.height * 0.7);
                 break;
             case 1: // Laser (vertical beam)
                 const laserY = platformY - 100; // Laser from above
                 obstacle = this.obstacles.create(x, laserY, 'laser');
-                obstacle.setScale(2, 6); // Make bigger and taller
-                obstacle.body.setSize(8, 180);
+                obstacle.setScale(0.8, 1.2); // Make it vertical beam size
+                obstacle.body.setSize(obstacle.width * 0.6, obstacle.height);
                 break;
             case 2: // Drone (flying)
-                const droneY = platformY - 150; // Drone flying above platform
+                const droneY = platformY - 120; // Drone flying above platform
                 obstacle = this.obstacles.create(x, droneY, 'drone');
-                obstacle.setScale(1.5); // Make bigger
-                obstacle.body.setSize(28, 28);
+                obstacle.setScale(0.4); // Scale down to reasonable size
+                obstacle.body.setSize(obstacle.width * 0.7, obstacle.height * 0.7);
                 // Make drone hover
                 this.tweens.add({
                     targets: obstacle,
