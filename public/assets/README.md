@@ -17,6 +17,7 @@ Place your game image files in this directory with the following names:
 - Background should be **opaque** (no transparency)
 - Use **pixel art style** with neon colors (cyan, magenta, pink, purple)
 - Files must be named exactly as listed above (lowercase, .png extension)
+- This folder is in `public/` directory - files here are copied directly to build output
 
 ## After adding images:
 
